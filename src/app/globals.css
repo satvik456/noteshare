@@ -1,0 +1,197 @@
+@import "tailwindcss";
+
+:root {
+  --bg-canvas: #eef2f7;
+  --surface-raised: #f2f5f9;
+  --surface-inset: #e8ecf2;
+  --surface-plate: linear-gradient(145deg, #f7f9fc, #e5eaf1);
+  --text-main: #2d3748;
+  --text-muted: #718096;
+  --accent-blue: #3b82f6;
+  --accent-gradient: linear-gradient(145deg, #3b82f6, #2563eb);
+  
+  /* Neumorphic Shadows */
+  --shadow-raised: 8px 8px 18px #d1d9e6, -8px -8px 18px #ffffff;
+  --shadow-raised-lg: 12px 12px 28px #cbd5e1, -12px -12px 28px #ffffff;
+  --shadow-raised-sm: 4px 4px 10px #d1d9e6, -4px -4px 10px #ffffff;
+  --shadow-raised-xs: 2px 2px 6px #d1d9e6, -2px -2px 6px #ffffff;
+  --shadow-inset: inset 3px 3px 6px #d1d9e6, inset -3px -3px 6px #ffffff;
+  --shadow-inset-deep: inset 4px 4px 10px #cbd5e1, inset -4px -4px 10px #ffffff;
+  --shadow-btn: 5px 5px 12px #d1d9e6, -5px -5px 12px #ffffff, inset 0 1px 1px rgba(255, 255, 255, 0.9);
+  --shadow-btn-active: inset 3px 3px 6px #cbd5e1, inset -2px -2px 5px #ffffff;
+  --shadow-accent-btn: 5px 6px 15px rgba(37, 99, 235, 0.35), -4px -4px 10px #ffffff, inset 0 1px 1px rgba(255, 255, 255, 0.4), inset 0 -1px 2px rgba(0, 0, 0, 0.2);
+}
+
+body {
+  background-color: var(--bg-canvas);
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  min-height: 100vh;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   SKEUOMORPHIC & NEUMORPHIC UTILITIES
+   ========================================================================== */
+
+/* Raised Card Surface */
+.neu-card {
+  background: #eef2f7;
+  box-shadow: 10px 10px 24px #d1d9e6, -10px -10px 24px #ffffff;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.neu-card-sm {
+  background: #eef2f7;
+  box-shadow: 6px 6px 14px #d1d9e6, -6px -6px 14px #ffffff;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+/* Tactile Convex Surface */
+.neu-convex {
+  background: linear-gradient(145deg, #f7f9fc, #e3e8f1);
+  box-shadow: 6px 6px 14px #d1d9e6, -6px -6px 14px #ffffff, inset 0 1px 1px rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+/* Inset / Carved Surface */
+.neu-inset {
+  background: #e9edf3;
+  box-shadow: inset 3px 3px 6px #d1d9e6, inset -3px -3px 6px #ffffff;
+  border: 1px solid rgba(209, 217, 230, 0.4);
+}
+
+.neu-inset-deep {
+  background: #e6ebf2;
+  box-shadow: inset 4px 4px 10px #cbd5e1, inset -4px -4px 10px #ffffff;
+  border: 1px solid rgba(203, 213, 225, 0.5);
+}
+
+/* Tactile Groove Line */
+.neu-groove {
+  height: 2px;
+  border-top: 1px solid #d1d9e6;
+  border-bottom: 1px solid #ffffff;
+}
+
+/* Buttons */
+.neu-button {
+  background: linear-gradient(145deg, #f7f9fc, #e5eaf2);
+  box-shadow: 5px 5px 12px #d1d9e6, -5px -5px 12px #ffffff, inset 0 1px 1px rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  color: #2d3748;
+  border-radius: 16px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.neu-button:hover:not(:disabled) {
+  background: linear-gradient(145deg, #ffffff, #e9edf4);
+  box-shadow: 6px 6px 15px #c8d2e0, -6px -6px 15px #ffffff, inset 0 1px 1px #ffffff;
+  transform: translateY(-1px);
+}
+
+.neu-button:active:not(:disabled) {
+  transform: translateY(1px);
+  background: #e9edf3;
+  box-shadow: inset 3px 3px 6px #d1d9e6, inset -3px -3px 6px #ffffff;
+}
+
+/* Primary Accent Button */
+.neu-button-primary {
+  background: linear-gradient(145deg, #3b82f6, #2563eb);
+  box-shadow: 5px 6px 16px rgba(37, 99, 235, 0.35), -4px -4px 12px #ffffff, inset 0 1px 1px rgba(255, 255, 255, 0.4), inset 0 -1px 2px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  color: #ffffff;
+  border-radius: 16px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.neu-button-primary:hover:not(:disabled) {
+  background: linear-gradient(145deg, #4f90f7, #1d4ed8);
+  box-shadow: 6px 7px 18px rgba(37, 99, 235, 0.45), -4px -4px 12px #ffffff, inset 0 1px 1px rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+.neu-button-primary:active:not(:disabled) {
+  transform: translateY(1px);
+  background: linear-gradient(145deg, #1d4ed8, #2563eb);
+  box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.3), inset -2px -2px 5px rgba(255, 255, 255, 0.2);
+}
+
+/* Destructive Button */
+.neu-button-destructive {
+  background: linear-gradient(145deg, #ef4444, #dc2626);
+  box-shadow: 5px 6px 15px rgba(220, 38, 38, 0.35), -4px -4px 10px #ffffff, inset 0 1px 1px rgba(255, 255, 255, 0.4), inset 0 -1px 2px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #ffffff;
+  border-radius: 16px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.neu-button-destructive:hover:not(:disabled) {
+  background: linear-gradient(145deg, #f87171, #b91c1c);
+  box-shadow: 6px 7px 18px rgba(220, 38, 38, 0.45), -4px -4px 10px #ffffff;
+  transform: translateY(-1px);
+}
+
+.neu-button-destructive:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.35), inset -2px -2px 5px rgba(255, 255, 255, 0.2);
+}
+
+/* Icon Button (Circular / Rounded square) */
+.neu-icon-btn {
+  background: linear-gradient(145deg, #f7f9fc, #e5eaf2);
+  box-shadow: 4px 4px 10px #d1d9e6, -4px -4px 10px #ffffff, inset 0 1px 1px rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.neu-icon-btn:hover {
+  background: linear-gradient(145deg, #ffffff, #e9edf4);
+  box-shadow: 5px 5px 12px #c8d2e0, -5px -5px 12px #ffffff;
+  transform: translateY(-1px);
+}
+
+.neu-icon-btn:active {
+  transform: translateY(1px);
+  background: #e9edf3;
+  box-shadow: inset 2px 2px 5px #d1d9e6, inset -2px -2px 5px #ffffff;
+}
+
+/* Badge / Pill */
+.neu-badge {
+  background: linear-gradient(145deg, #f7f9fc, #e5eaf2);
+  box-shadow: 2px 2px 6px #d1d9e6, -2px -2px 6px #ffffff, inset 0 1px 1px rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+/* Custom Scrollbar for tactile look */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #e9edf3;
+  box-shadow: inset 1px 1px 3px #d1d9e6, inset -1px -1px 3px #ffffff;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(145deg, #cbd5e1, #94a3b8);
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+  border-radius: 4px;
+}
+
