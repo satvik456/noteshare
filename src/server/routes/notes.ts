@@ -77,8 +77,24 @@ notesRoutes.post("/", async (c) => {
       })
       .returning();
 
-    const appUrl = process.env.APP_URL ?? "http://localhost:3000";
-    const shareUrl = `${appUrl}/share/${rawToken}`;
+    // Extract base URL reliably:
+    // 1. If APP_URL is configured (and not localhost), use it (stripping trailing slashes).
+    // 2. Otherwise, detect dynamically from request headers (x-forwarded-host / host / origin).
+    const originHeader = c.req.header("origin");
+    const protoHeader = c.req.header("x-forwarded-proto") ?? "https";
+    const hostHeader = c.req.header("x-forwarded-host") ?? c.req.header("host");
+    const detectedOrigin = originHeader || (hostHeader ? `${protoHeader}://${hostHeader}` : null);
+
+    let baseAppUrl = process.env.APP_URL ? process.env.APP_URL.trim().replace(/\/+$/, "") : "";
+    if (!baseAppUrl || baseAppUrl.includes("localhost")) {
+      if (detectedOrigin && !detectedOrigin.includes("localhost")) {
+        baseAppUrl = detectedOrigin.replace(/\/+$/, "");
+      } else if (!baseAppUrl) {
+        baseAppUrl = "http://localhost:3000";
+      }
+    }
+
+    const shareUrl = `${baseAppUrl}/share/${rawToken}`;
 
     return c.json({
       note: {

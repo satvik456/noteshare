@@ -211,10 +211,29 @@ export default function NoteDetailPage() {
     if (stored) setShareUrl(stored);
   }, [noteId]);
 
+  const getNormalizedShareUrl = (rawUrl: string) => {
+    if (!rawUrl) return "";
+    if (typeof window !== "undefined") {
+      try {
+        const urlObj = new URL(rawUrl);
+        const cleanPath = urlObj.pathname.replace(/\/+/g, "/");
+        if (window.location.hostname !== "localhost" && urlObj.hostname === "localhost") {
+          return `${window.location.origin}${cleanPath}`;
+        }
+        return `${urlObj.origin}${cleanPath}`;
+      } catch {
+        return rawUrl.replace(/([^:]\/)\/+/g, "$1");
+      }
+    }
+    return rawUrl;
+  };
+
+  const displayShareUrl = shareUrl ? getNormalizedShareUrl(shareUrl) : "";
+
   const copyShareUrl = async () => {
-    if (!shareUrl) return;
+    if (!displayShareUrl) return;
     try {
-      await navigator.clipboard.writeText(shareUrl);
+      await navigator.clipboard.writeText(displayShareUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {}
@@ -541,50 +560,61 @@ export default function NoteDetailPage() {
                 )}
               </div>
 
-              {/* Share URL Plate */}
-              {shareUrl ? (
+              {/* Share URL Plate - 100% Responsive */}
+              {displayShareUrl ? (
                 <div className="space-y-3 pt-2">
                   <Separator />
-                  <div className="pt-2">
-                    <div className="flex items-center justify-between mb-2.5">
+                  <div className="pt-2 space-y-3">
+                    <div className="flex items-center justify-between">
                       <p className="text-xs font-bold uppercase tracking-wider text-[#64748b]">
-                        Share Link URL
+                        Active Share URL
                       </p>
                       {isActive && (
-                        <a
-                          href={shareUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 hover:underline"
-                        >
-                          Test in New Tab <ExternalLink className="h-3 w-3" />
-                        </a>
+                        <span className="text-[11px] font-bold text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full">
+                          Live Active
+                        </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-3">
-                      <Input
-                        readOnly
-                        value={shareUrl}
-                        className="font-mono text-xs text-[#1e293b]"
-                      />
+
+                    {/* Full visible URL Box */}
+                    <div className="p-3.5 rounded-[16px] bg-[#e9edf3] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] border border-[#d1d9e6]/60 select-all">
+                      <p className="font-mono text-xs sm:text-sm font-semibold text-[#1e293b] break-all leading-relaxed">
+                        {displayShareUrl}
+                      </p>
+                    </div>
+
+                    {/* Action buttons bar */}
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pt-1">
                       <Button
                         variant="outline"
                         size="default"
                         onClick={() => void copyShareUrl()}
-                        className="shrink-0 h-11 px-5"
+                        className="flex-1 h-11 px-5 rounded-[14px] text-xs font-bold shadow-sm flex items-center justify-center gap-2"
                       >
                         {copied ? (
                           <>
                             <Check className="h-4 w-4 text-emerald-600" />
-                            Copied
+                            Copied to Clipboard!
                           </>
                         ) : (
                           <>
                             <Copy className="h-4 w-4" />
-                            Copy Link
+                            Copy Share URL
                           </>
                         )}
                       </Button>
+                      {isActive && (
+                        <a
+                          href={displayShareUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="h-11 px-5 rounded-[14px] bg-[#eef2f7] shadow-[4px_4px_10px_#d1d9e6,-4px_-4px_10px_#ffffff] border border-white/80 hover:bg-white text-xs font-bold text-blue-600 flex items-center justify-center gap-2 transition-all active:translate-y-[1px]"
+                          title="Open in new tab to test live viewing"
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                          Open in New Tab
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>

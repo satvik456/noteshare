@@ -152,6 +152,24 @@ export default function NewNotePage() {
     );
   }
 
+  const getNormalizedShareUrl = (rawUrl: string) => {
+    if (typeof window !== "undefined") {
+      try {
+        const urlObj = new URL(rawUrl);
+        const cleanPath = urlObj.pathname.replace(/\/+/g, "/");
+        if (window.location.hostname !== "localhost" && urlObj.hostname === "localhost") {
+          return `${window.location.origin}${cleanPath}`;
+        }
+        return `${urlObj.origin}${cleanPath}`;
+      } catch {
+        return rawUrl.replace(/([^:]\/)\/+/g, "$1");
+      }
+    }
+    return rawUrl;
+  };
+
+  const displayShareUrl = result ? getNormalizedShareUrl(result.share.shareUrl) : "";
+
   return (
     <div className="min-h-screen bg-[#eef2f7] text-[#2d3748]">
       <Navbar />
@@ -188,46 +206,55 @@ export default function NewNotePage() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-6 pt-6">
-                {/* Share URL */}
-                <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase tracking-wider text-[#64748b] block">
-                    Expiring Share URL
-                  </Label>
-                  <div className="flex items-center gap-3">
-                    <Input
-                      readOnly
-                      value={result.share.shareUrl}
-                      className="font-mono text-xs text-[#1e293b]"
-                    />
+                {/* Share URL Section - 100% Responsive */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-xs font-bold uppercase tracking-wider text-[#64748b] block">
+                      Expiring Share URL
+                    </Label>
+                    <span className="text-[11px] font-bold text-blue-600 bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full">
+                      Ready to Share
+                    </span>
+                  </div>
+
+                  {/* Full URL Box (Always visible & selectable) */}
+                  <div className="p-3.5 rounded-[16px] bg-[#e9edf3] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] border border-[#d1d9e6]/60 select-all">
+                    <p className="font-mono text-xs sm:text-sm font-semibold text-[#1e293b] break-all leading-relaxed">
+                      {displayShareUrl}
+                    </p>
+                  </div>
+
+                  {/* Action Buttons Bar */}
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pt-1">
                     <Button
                       variant="outline"
                       size="default"
-                      onClick={() => void copyToClipboard(result.share.shareUrl, "url")}
-                      className="shrink-0 h-11 px-5"
+                      onClick={() => void copyToClipboard(displayShareUrl, "url")}
+                      className="flex-1 h-11 px-5 rounded-[14px] text-xs font-bold shadow-sm flex items-center justify-center gap-2"
                     >
                       {copiedUrl ? (
-                        <><Check className="h-4 w-4 text-emerald-600" />Copied</>
+                        <><Check className="h-4 w-4 text-emerald-600" /> Copied to Clipboard!</>
                       ) : (
-                        <><Copy className="h-4 w-4" />Copy URL</>
+                        <><Copy className="h-4 w-4" /> Copy Share URL</>
                       )}
                     </Button>
                     <a
-                      href={result.share.shareUrl}
+                      href={displayShareUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="shrink-0 h-11 px-4 rounded-[14px] bg-[#eef2f7] shadow-[4px_4px_10px_#d1d9e6,-4px_-4px_10px_#ffffff] border border-white/80 hover:bg-white text-xs font-bold text-blue-600 flex items-center gap-1.5 transition-all"
+                      className="h-11 px-5 rounded-[14px] bg-[#eef2f7] shadow-[4px_4px_10px_#d1d9e6,-4px_-4px_10px_#ffffff] border border-white/80 hover:bg-white text-xs font-bold text-blue-600 flex items-center justify-center gap-2 transition-all active:translate-y-[1px]"
                       title="Open in new tab to test live viewing"
                     >
                       <ExternalLink className="h-4 w-4" />
                       Open in New Tab
                     </a>
                   </div>
-                  <p className="text-xs text-[#64748b] mt-1 font-medium">
+                  <p className="text-xs text-[#64748b] font-medium leading-relaxed">
                     💡 <strong>Test Tip:</strong> Click &quot;Open in New Tab&quot; to test. If this is a One-Time note, viewing it will automatically consume the link and increase the counter 0 → 1!
                   </p>
                 </div>
 
-                {/* Access Key (password-protected only) */}
+                {/* Access Key Section (password-protected only) */}
                 {result.share.accessKey && (
                   <div className="space-y-3 p-5 rounded-[20px] bg-[#eef2f7] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] border border-[#d1d9e6]/60">
                     <div className="flex items-center justify-between">
@@ -240,22 +267,22 @@ export default function NewNotePage() {
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
                       <Input
                         readOnly
                         value={result.share.accessKey}
-                        className="font-mono text-base font-bold tracking-widest text-center bg-white shadow-sm border border-amber-200"
+                        className="flex-1 font-mono text-base font-bold tracking-widest text-center bg-white shadow-sm border border-amber-200 h-11"
                       />
                       <Button
                         variant="outline"
                         size="default"
                         onClick={() => void copyToClipboard(result.share.accessKey!, "key")}
-                        className="shrink-0 h-11 px-5 bg-white border border-amber-200 hover:bg-amber-50"
+                        className="h-11 px-5 rounded-[14px] bg-white border border-amber-200 hover:bg-amber-50 text-xs font-bold shrink-0"
                       >
                         {copiedKey ? (
-                          <><Check className="h-4 w-4 text-emerald-600" />Copied</>
+                          <><Check className="h-4 w-4 text-emerald-600" /> Copied!</>
                         ) : (
-                          <><Copy className="h-4 w-4" />Copy Key</>
+                          <><Copy className="h-4 w-4" /> Copy Key</>
                         )}
                       </Button>
                     </div>
