@@ -123,10 +123,18 @@ export default function LoginPage() {
 
               {/* Password */}
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-xs font-bold uppercase tracking-wider text-[#64748b] flex items-center gap-1.5">
-                  <Lock className="h-3.5 w-3.5 text-blue-600" />
-                  Password
-                </Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password" className="text-xs font-bold uppercase tracking-wider text-[#64748b] flex items-center gap-1.5">
+                    <Lock className="h-3.5 w-3.5 text-blue-600" />
+                    Password
+                  </Label>
+                  <Link
+                    href="/forgot-password"
+                    className="text-xs font-bold text-blue-600 hover:text-blue-700 hover:underline"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
                 <Input
                   id="password"
                   type="password"

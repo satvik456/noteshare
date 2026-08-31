@@ -110,6 +110,29 @@ export const rateLimitAttempts = pgTable(
   ]
 );
 
+// Password reset tokens table for forgot password flow
+export const passwordResetTokens = pgTable(
+  "password_reset_tokens",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    tokenHash: text("token_hash").notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    usedAt: timestamp("used_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("password_reset_token_hash_idx").on(table.tokenHash),
+    index("password_reset_user_id_idx").on(table.userId),
+  ]
+);
+
 // Type exports
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
@@ -118,3 +141,6 @@ export type NewNote = typeof notes.$inferInsert;
 export type ShareLink = typeof shareLinks.$inferSelect;
 export type NewShareLink = typeof shareLinks.$inferInsert;
 export type RateLimitAttempt = typeof rateLimitAttempts.$inferSelect;
+export type PasswordResetToken = typeof passwordResetTokens.$inferSelect;
+export type NewPasswordResetToken = typeof passwordResetTokens.$inferInsert;
+
